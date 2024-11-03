@@ -62,24 +62,29 @@
         .log-list {
             max-width: 600px;
             margin: 20px auto;
-            background-color: #1a1a1a;
-            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px; /* Space between cards */
+        }
+        .log-card {
+            padding: 15px;
+            background-color: #2b2b2b;
             border-radius: 5px;
-            color: #ccc;
+            border: 1px solid #444;
+            position: relative;
         }
-        .log-entry {
-            padding: 10px;
-            margin: 10px 0;
-            border-bottom: 1px solid #444;
-        }
-        .log-entry img {
-            width: 50px;
-            height: 50px;
+        .log-card img {
+            width: 100px;
+            height: 100px;
             object-fit: cover;
             border-radius: 5px;
+            margin-right: 10px;
+            float: right; /* Align image to the right */
         }
-        .log-entry button {
-            margin-left: 10px;
+        .log-card button {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
             background-color: #d9534f;
             color: white;
         }
@@ -193,20 +198,18 @@
         }
 
         function addLogEntry(log, index) {
-            const logEntry = document.createElement('div');
-            logEntry.className = 'log-entry';
+            const logCard = document.createElement('div');
+            logCard.className = 'log-card';
 
-            logEntry.innerHTML = `
-                <strong>${log.dateTime}</strong> - Pheno Name: ${log.phenoName} - Trait: ${log.trait} (${log.detail})<br>
+            logCard.innerHTML = `
+                <strong>${log.dateTime}</strong><br>
+                Pheno Name: ${log.phenoName}<br>
+                Trait: ${log.trait} (${log.detail})<br>
                 Notes: ${log.notes}
-                ${log.image ? `<br><img src="${log.image}" alt="Image" />` : ''}
-                <div style="margin-top: 10px;">
-                    <button onclick="editLog(${index})">Edit</button>
-                    <button onclick="deleteLog(${index})">Delete</button>
-                </div>
-                <hr style="border: 1px solid #444;"/>
+                ${log.image ? `<img src="${log.image}" alt="Image" />` : ''}
+                <button onclick="deleteLog(${index})">Delete</button>
             `;
-            logList.appendChild(logEntry);
+            logList.appendChild(logCard);
         }
 
         form.addEventListener('submit', function(event) {
@@ -247,26 +250,6 @@
             logs.splice(index, 1);
             localStorage.setItem('phenotypeLogs', JSON.stringify(logs));
             loadLogs();
-        }
-
-        function editLog(index) {
-            const logs = JSON.parse(localStorage.getItem('phenotypeLogs'));
-            const log = logs[index];
-
-            document.getElementById('pheno-name').value = log.phenoName;
-            document.getElementById('trait').value = log.trait;
-            updateTraitOptions();
-            document.getElementById('trait-detail').value = log.detail;
-            document.getElementById('notes').value = log.notes;
-
-            if (log.image) {
-                const img = new Image();
-                img.src = log.image;
-                img.onload = function() {
-                    document.getElementById('image').value = '';
-                };
-            }
-            deleteLog(index); // remove from log after loading to edit
         }
 
         loadLogs();
