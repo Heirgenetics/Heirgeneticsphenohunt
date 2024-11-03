@@ -68,9 +68,6 @@
             color: #ccc;
         }
         .log-entry {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             padding: 10px;
             margin: 10px 0;
             border-bottom: 1px solid #444;
@@ -188,10 +185,11 @@
         function loadLogs() {
             const logs = JSON.parse(localStorage.getItem('phenotypeLogs')) || [];
             logList.innerHTML = "<h3>Phenotype Log Entries</h3>";
+            emptyMessage.style.display = logs.length ? 'none' : 'block'; // Show empty message if no logs
+
             logs.forEach((log, index) => {
                 addLogEntry(log, index);
             });
-            emptyMessage.style.display = logs.length ? 'none' : 'block';
         }
 
         function addLogEntry(log, index) {
@@ -199,15 +197,14 @@
             logEntry.className = 'log-entry';
 
             logEntry.innerHTML = `
-                <div>
-                    <strong>${log.dateTime}</strong> - Pheno Name: ${log.phenoName} - Trait: ${log.trait} (${log.detail})<br>
-                    Notes: ${log.notes}
-                    ${log.image ? `<br><img src="${log.image}" alt="Image" />` : ''}
-                </div>
-                <div>
+                <strong>${log.dateTime}</strong> - Pheno Name: ${log.phenoName} - Trait: ${log.trait} (${log.detail})<br>
+                Notes: ${log.notes}
+                ${log.image ? `<br><img src="${log.image}" alt="Image" />` : ''}
+                <div style="margin-top: 10px;">
                     <button onclick="editLog(${index})">Edit</button>
                     <button onclick="deleteLog(${index})">Delete</button>
                 </div>
+                <hr style="border: 1px solid #444;"/>
             `;
             logList.appendChild(logEntry);
         }
