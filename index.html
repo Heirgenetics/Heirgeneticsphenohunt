@@ -22,7 +22,7 @@
         }
         h2 {
             font-size: 1.2em;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
         .tracker {
             max-width: 600px;
@@ -90,11 +90,18 @@
             font-size: 0.8em;
             color: #ccc;
         }
+        .centered {
+            text-align: center;
+        }
     </style>
 </head>
 <body>
     <h1>Heir Genetics Pheno Hunt</h1>
     <h2>Your Guide to Phenotype Tracking</h2>
+    
+    <div class="centered">
+        <img src="https://sensiseeds.com/blog/wp-content/uploads/2022/08/Cannabis-plant-info-graphic-EN-scaled.jpg" alt="Phenotype Tracking Guide" style="max-width: 100%; border-radius: 5px;">
+    </div>
 
     <div class="tracker">
         <form id="phenotype-form">
@@ -226,20 +233,16 @@
             }
         });
 
-        function saveLog(dateTime, phenoName, trait, detail, notes, image) {
-            const log = { dateTime, phenoName, trait, detail, notes, image };
-
+        function saveLog(dateTime, phenoName, trait, detail, notes, imageUrl) {
             const logs = JSON.parse(localStorage.getItem('phenotypeLogs')) || [];
-            logs.push(log);
+            logs.push({ dateTime, phenoName, trait, detail, notes, image: imageUrl });
             localStorage.setItem('phenotypeLogs', JSON.stringify(logs));
-
-            addLogEntry(log, logs.length - 1);
-            emptyMessage.style.display = 'none';
+            loadLogs();
             form.reset();
         }
 
         function deleteLog(index) {
-            const logs = JSON.parse(localStorage.getItem('phenotypeLogs'));
+            const logs = JSON.parse(localStorage.getItem('phenotypeLogs')) || [];
             logs.splice(index, 1);
             localStorage.setItem('phenotypeLogs', JSON.stringify(logs));
             loadLogs();
